@@ -20,6 +20,7 @@ public class DuckActionQuack extends TestNGCitrusSpringSupport {
     private static final int SOUND_COUNT = 4;
     private String duckId;
 
+    // TODO: SHIFT-AQA-02
     @Test(description = "Проверка способности крякать при четном ID")
     @CitrusTest
     public void quackDuckWithEvenId(@Optional @CitrusResource TestCaseRunner runner) {

@@ -16,6 +16,7 @@ import static com.consol.citrus.http.actions.HttpActionBuilder.http;
 public class DuckActionSwim extends TestNGCitrusSpringSupport {
     String baseURL = "http://localhost:2222";
 
+    // TODO: SHIFT-AQA-01
     @Test(description = "Проверка способности плавать для существующей утки")
     @CitrusTest
     public void successSwim(@Optional @CitrusResource TestCaseRunner runner) {

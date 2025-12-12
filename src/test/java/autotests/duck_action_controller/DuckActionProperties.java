@@ -19,6 +19,7 @@ public class DuckActionProperties extends TestNGCitrusSpringSupport {
 
     String baseURL = "http://localhost:2222";
 
+    // TODO: SHIFT-AQA-03
     @Test(description = "Проверка свойств утки с четным ID и материалом wood")
     @CitrusTest
     public void verifyEvenIdWithWood(@Optional @CitrusResource TestCaseRunner runner, @CitrusResource TestContext context) {
