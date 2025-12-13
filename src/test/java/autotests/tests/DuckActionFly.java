@@ -6,10 +6,15 @@ import autotests.payloads.DuckProperties;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-actions-controller")
+@Feature("Полет уточки")
+@Story("Эндпоинт /api/duck/action/fly")
 public class DuckActionFly extends DuckActionsClient {
 
     @Test(description = "Проверка полета уточки с крыльями ACTIVE")

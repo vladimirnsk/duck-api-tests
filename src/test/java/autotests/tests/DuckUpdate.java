@@ -7,10 +7,15 @@ import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-controller")
+@Feature("Обновление характеристик уточки")
+@Story("Эндпоинт /api/duck/update")
 public class DuckUpdate extends DuckActionsClient {
 
     @Test(description = "Проверка обновление параметров color и height для уточки")

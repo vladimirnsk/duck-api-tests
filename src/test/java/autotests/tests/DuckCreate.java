@@ -6,10 +6,15 @@ import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-controller")
+@Feature("Параметризированное создание уточки")
+@Story("Эндпоинт /api/duck/create")
 public class DuckCreate extends DuckActionsClient {
 
     @Test(description = "Проверка создание уточки с материалом rubber")
@@ -52,6 +57,5 @@ public class DuckCreate extends DuckActionsClient {
 
         createDuck(runner, duckCreateIron);
         validateFullResponse(runner, duckCreateIron);
-        ;
     }
 }
