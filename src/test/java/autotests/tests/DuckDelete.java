@@ -28,6 +28,6 @@ public class DuckDelete extends DuckActionsClient {
         deleteDuck(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck is deleted");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponsePayload(runner, messageResponse, "OK");
     }
 }

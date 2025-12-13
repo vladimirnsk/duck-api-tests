@@ -15,6 +15,7 @@ import com.consol.citrus.validation.json.JsonPathMessageValidationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -183,18 +184,6 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", WingsState)));
     }
 
-    public void validateResponse(TestCaseRunner runner, DuckMessageResponse Message, String status) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .receive()
-                        .response(HttpStatus.valueOf(status.toUpperCase()))
-                        .message()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(new ObjectMappingPayloadBuilder(Message, new ObjectMapper()))
-        );
-    }
-
     public void validateResponse(TestCaseRunner runner) {
         runner.$(
                 http()
@@ -204,6 +193,41 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                         .message()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(""));
+    }
+
+    public void validateResponseString(TestCaseRunner runner, String responseMessage, String status) {
+        runner.$(
+                http()
+                        .client(duckService)
+                        .receive()
+                        .response(HttpStatus.valueOf(status.toUpperCase()))
+                        .message()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(responseMessage)
+        );
+    }
+
+    public void validateResponseResources(TestCaseRunner runner, String expectedPayload) {
+        runner.$(
+                http()
+                        .client(duckService)
+                        .receive()
+                        .response(HttpStatus.OK)
+                        .message()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(new ClassPathResource(expectedPayload)));
+    }
+
+    public void validateResponsePayload(TestCaseRunner runner, DuckMessageResponse Message, String status) {
+        runner.$(
+                http()
+                        .client(duckService)
+                        .receive()
+                        .response(HttpStatus.valueOf(status.toUpperCase()))
+                        .message()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(new ObjectMappingPayloadBuilder(Message, new ObjectMapper()))
+        );
     }
 
     public void validateResponseSound(TestCaseRunner runner, DuckSoundResponse soundMessage,

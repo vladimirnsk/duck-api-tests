@@ -27,7 +27,7 @@ public class DuckActionFly extends DuckActionsClient {
 
         duckFly(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I am flying :)");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponsePayload(runner, messageResponse, "OK");
     }
 
     @Test(description = "Проверка полета уточки с крыльями FIXED")
@@ -45,7 +45,7 @@ public class DuckActionFly extends DuckActionsClient {
 
         duckFly(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I can not fly :C");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponsePayload(runner, messageResponse, "OK");
     }
 
     @Test(description = "Проверка полета уточки с крыльями UNDEFINED")
@@ -62,7 +62,6 @@ public class DuckActionFly extends DuckActionsClient {
         extractFromResponse(runner, "$.id", "duckId");
 
         duckFly(runner, "${duckId}");
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Wings are not detected :(");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponseString(runner, "{\n \"message\": \"Wings are not detected :(\"\n}", "OK");
     }
 }

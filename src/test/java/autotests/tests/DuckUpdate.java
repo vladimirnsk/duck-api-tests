@@ -33,7 +33,7 @@ public class DuckUpdate extends DuckActionsClient {
         updateDuck(runner, "${duckId}", duckUpdateColorHeight);
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponsePayload(runner, messageResponse, "OK");
     }
 
     @Test(description = "Проверка обновление параметров color и sound для уточки")
@@ -56,6 +56,6 @@ public class DuckUpdate extends DuckActionsClient {
         updateDuck(runner, "${duckId}", duckUpdateColorSound);
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponse(runner, messageResponse, "OK");
+        validateResponsePayload(runner, messageResponse, "OK");
     }
 }

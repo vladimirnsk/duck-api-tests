@@ -29,7 +29,7 @@ public class DuckActionSwim extends DuckActionsClient {
         duckSwim(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
         //validateResponse(runner, messageResponse,"OK");
-        validateResponse(runner, messageResponse, "NOT_FOUND");
+        validateResponsePayload(runner, messageResponse, "NOT_FOUND");
     }
 
     @Test(description = "Проверка способности плавать для несуществующей утки")
@@ -38,6 +38,6 @@ public class DuckActionSwim extends DuckActionsClient {
         duckSwim(runner, "912345");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
-        validateResponse(runner, messageResponse, "NOT_FOUND");
+        validateResponsePayload(runner, messageResponse, "NOT_FOUND");
     }
 }
