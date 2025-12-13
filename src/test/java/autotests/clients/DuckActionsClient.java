@@ -1,5 +1,6 @@
 package autotests.clients;
 
+import autotests.BaseTest;
 import autotests.EndpointConfig;
 import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
@@ -26,13 +27,8 @@ import java.util.Collections;
 import static com.consol.citrus.dsl.JsonPathSupport.jsonPath;
 import static com.consol.citrus.http.actions.HttpActionBuilder.http;
 
-@ContextConfiguration(classes = {EndpointConfig.class})
-public class DuckActionsClient extends TestNGCitrusSpringSupport {
 
-    @Autowired
-    @Qualifier("duckService")
-    protected HttpClient duckService;
-
+public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку")
     public void createDuck(TestCaseRunner runner, DuckProperties properties) {
