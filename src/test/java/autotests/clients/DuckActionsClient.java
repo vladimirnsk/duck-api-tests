@@ -13,6 +13,7 @@ import com.consol.citrus.message.builder.ObjectMappingPayloadBuilder;
 import com.consol.citrus.testng.spring.TestNGCitrusSpringSupport;
 import com.consol.citrus.validation.json.JsonPathMessageValidationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
@@ -32,6 +33,8 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
     @Qualifier("duckService")
     protected HttpClient duckService;
 
+
+    @Step("Создать уточку")
     public void createDuck(TestCaseRunner runner, DuckProperties properties) {
         runner.$(
                 http()
@@ -44,6 +47,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Создать уточку в зависимости от четности")
     public void createDuckEnsuringIdParity(TestCaseRunner runner, TestContext context, DuckProperties properties, boolean shouldBeEven) {
         int maxAttempts = 5;
         int attempt = 0;
@@ -73,6 +77,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         throw new RuntimeException("Failed to create duck with desired ID parity after " + maxAttempts + " attempts. Last ID: " + context.getVariable("duckId"));
     }
 
+    @Step("Обновить характеристики уточки")
     public void updateDuck(TestCaseRunner runner, String id, DuckProperties properties) {
         runner.$(
                 http()
@@ -88,6 +93,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Удалить уточку")
     public void deleteDuck(TestCaseRunner runner, String id) {
         runner.$(
                 http()
@@ -98,6 +104,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Уточка летит")
     public void duckFly(TestCaseRunner runner, String id) {
         runner.$(
                 http()
@@ -108,6 +115,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Получить характеристики уточки")
     public void duckProperties(TestCaseRunner runner, String id) {
         runner.$(
                 http()
@@ -117,6 +125,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                         .queryParam("id", id));
     }
 
+    @Step("Уточка крякает")
     public void duckQuack(TestCaseRunner runner, String id, int repetitionCount, int soundCount) {
         runner.$(
                 http()
@@ -129,6 +138,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Уточка плывет")
     public void duckSwim(TestCaseRunner runner, String id) {
         runner.$(
                 http()
@@ -139,6 +149,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Получить необходимые данные из ответа")
     public void extractFromResponse(TestCaseRunner runner, String jsonPath, String variableName) {
         runner.$(
                 http()
@@ -151,6 +162,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Валидировать по свойствам утки payload")
     public void validateFullResponse(TestCaseRunner runner, DuckProperties properties) {
         runner.$(
                 http()
@@ -168,6 +180,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", properties.wingsState())));
     }
 
+    @Step("Валидировать по свойствам утки string")
     public void validateFullResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
         runner.$(
                 http()
@@ -184,6 +197,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", WingsState)));
     }
 
+    @Step("Валидировать пустой ответ")
     public void validateResponse(TestCaseRunner runner) {
         runner.$(
                 http()
@@ -195,6 +209,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                         .body(""));
     }
 
+    @Step("Валидировать при передачи строки сообщения")
     public void validateResponseString(TestCaseRunner runner, String responseMessage, String status) {
         runner.$(
                 http()
@@ -207,6 +222,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Валидировать при передачи ресурса")
     public void validateResponseResources(TestCaseRunner runner, String expectedPayload) {
         runner.$(
                 http()
@@ -218,6 +234,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                         .body(new ClassPathResource(expectedPayload)));
     }
 
+    @Step("Валидировать при передачи сообщения")
     public void validateResponsePayload(TestCaseRunner runner, DuckMessageResponse Message, String status) {
         runner.$(
                 http()
@@ -230,6 +247,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
+    @Step("Валидировать при передачи звука")
     public void validateResponseSound(TestCaseRunner runner, DuckSoundResponse soundMessage,
                                       int repetitionCount, int soundCount) {
 
