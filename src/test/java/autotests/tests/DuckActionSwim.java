@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 public class DuckActionSwim extends DuckActionsClient {
 
+    // TODO: SHIFT-AQA-01
     @Test(description = "Проверка способности плавать для существующей утки")
     @CitrusTest
     public void successSwim(@Optional @CitrusResource TestCaseRunner runner) {

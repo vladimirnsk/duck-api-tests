@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 
 public class DuckActionQuack extends DuckActionsClient {
 
+    // TODO: SHIFT-AQA-02
     @Test(description = "Проверка способности крякать при четном ID")
     @CitrusTest
     public void oddQuack(@Optional @CitrusResource TestCaseRunner runner, @CitrusResource TestContext context) {
