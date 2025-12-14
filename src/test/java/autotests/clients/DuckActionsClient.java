@@ -1,29 +1,27 @@
 package autotests.clients;
 
 import autotests.BaseTest;
-import autotests.EndpointConfig;
 import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
 import autotests.payloads.DuckSoundResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.context.TestContext;
 import com.consol.citrus.dsl.MessageSupport;
-import com.consol.citrus.http.client.HttpClient;
 import com.consol.citrus.message.MessageType;
 import com.consol.citrus.message.builder.ObjectMappingPayloadBuilder;
-import com.consol.citrus.testng.spring.TestNGCitrusSpringSupport;
 import com.consol.citrus.validation.json.JsonPathMessageValidationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.qameta.allure.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Collections;
+import java.util.Locale;
 
+import static com.consol.citrus.actions.ExecuteSQLAction.Builder.sql;
+import static com.consol.citrus.actions.ExecuteSQLQueryAction.Builder.query;
 import static com.consol.citrus.dsl.JsonPathSupport.jsonPath;
 import static com.consol.citrus.http.actions.HttpActionBuilder.http;
 
@@ -41,6 +39,25 @@ public class DuckActionsClient extends BaseTest {
                         .header("Content-Type", "application/json")
                         .body(new ObjectMappingPayloadBuilder(properties, new ObjectMapper()))
         );
+    }
+
+    @Step("Создать уточку SQL")
+    public void createDuckDB(TestCaseRunner runner, DuckProperties properties) {
+        deleteDuckByPropertiesDB(runner, properties);
+        String insertSql = String.format(
+                Locale.US,
+                "INSERT INTO DUCK (ID, COLOR, HEIGHT, MATERIAL, SOUND, WINGS_STATE) " +
+                        "SELECT COALESCE(MAX(ID), 0) + 1, '%s', %.2f, '%s', '%s', '%s' " +
+                        "FROM DUCK",
+                properties.color(),
+                properties.height(),
+                properties.material(),
+                properties.sound(),
+                properties.wingsState()
+        );
+
+        runner.$(sql(testDb)
+                .statement(insertSql));
     }
 
     @Step("Создать уточку в зависимости от четности")
@@ -89,6 +106,28 @@ public class DuckActionsClient extends BaseTest {
         );
     }
 
+    @Step("Обновить характеристики уточки")
+    public void updateDuckByIdDB(TestCaseRunner runner, DuckProperties newProperties) {
+        String updateSql = String.format(
+                Locale.US,
+                "UPDATE DUCK SET " +
+                        "COLOR = '%s', " +
+                        "HEIGHT = %.6f, " +
+                        "MATERIAL = '%s', " +
+                        "SOUND = '%s', " +
+                        "WINGS_STATE = '%s' " +
+                        "WHERE ID = ${duckId}",
+                newProperties.color(),
+                newProperties.height(),
+                newProperties.material(),
+                newProperties.sound(),
+                newProperties.wingsState()
+        );
+
+        runner.$(sql(testDb)
+                .statement(updateSql));
+    }
+
     @Step("Удалить уточку")
     public void deleteDuck(TestCaseRunner runner, String id) {
         runner.$(
@@ -98,6 +137,37 @@ public class DuckActionsClient extends BaseTest {
                         .delete("/api/duck/delete")
                         .queryParam("id", id)
         );
+    }
+
+    @Step("Удалить уточку по характеристикам SQL")
+    public void deleteDuckByPropertiesDB(TestCaseRunner runner, DuckProperties properties) {
+        String deleteSql = String.format(
+                Locale.US,
+                "DELETE FROM DUCK WHERE " +
+                        "COLOR = '%s' AND " +
+                        "HEIGHT = %.6f AND " +
+                        "MATERIAL = '%s' AND " +
+                        "SOUND = '%s' AND " +
+                        "WINGS_STATE = '%s'",
+                properties.color(),
+                properties.height(),
+                properties.material(),
+                properties.sound(),
+                properties.wingsState()
+        );
+
+        runner.$(sql(testDb)
+                .statement(deleteSql));
+    }
+
+    @Step("Удалить уточку по ID SQL")
+    public void deleteDuckByIdDB(TestCaseRunner runner) {
+        runner.$(sql(testDb)
+                .statement("DELETE FROM DUCK WHERE ID = ${duckId}"));
+
+        runner.$(query(testDb)
+                .statement("SELECT COUNT(*) FROM DUCK WHERE ID = ${duckId}")
+                .validate("COUNT(*)", "0"));
     }
 
     @Step("Уточка летит")
@@ -262,5 +332,61 @@ public class DuckActionsClient extends BaseTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(new ObjectMappingPayloadBuilder(expectedResponse, new ObjectMapper()))
         );
+    }
+
+    @Step("Найти уточку по характеристикам SQL")
+    public void findDuckByPropertiesDB(TestCaseRunner runner, DuckProperties properties) {
+        String searchSql = String.format(
+                Locale.US,
+                "SELECT * FROM DUCK WHERE " +
+                        "COLOR = '%s' AND " +
+                        "HEIGHT = %.6f AND " +
+                        "MATERIAL = '%s' AND " +
+                        "SOUND = '%s' AND " +
+                        "WINGS_STATE = '%s'",
+                properties.color(),
+                properties.height(),
+                properties.material(),
+                properties.sound(),
+                properties.wingsState()
+        );
+
+        runner.$(query(testDb)
+                .statement(searchSql)
+                .extract("ID", "duckId"));
+
+    }
+
+    @Step("Валидировать JSON для SQL ")
+    public void validateResponseResourcesDB(TestCaseRunner runner, String expectedPayloadPath) throws Exception {
+        ClassPathResource resource = new ClassPathResource(expectedPayloadPath);
+        ObjectMapper mapper = new ObjectMapper();
+
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        DuckProperties expectedDuck = mapper.readValue(resource.getInputStream(), DuckProperties.class);
+
+        validateDuckInDBByProperties(runner, expectedDuck);
+    }
+
+    @Step("Валидировать уточку в БД по характеристикам")
+    public void validateDuckInDBByProperties(TestCaseRunner runner, DuckProperties expectedDuck) {
+        String validateSql = String.format(
+                Locale.US,
+                "SELECT COUNT(*) FROM DUCK WHERE " +
+                        "COLOR = '%s' AND " +
+                        "HEIGHT = %.6f AND " +
+                        "MATERIAL = '%s' AND " +
+                        "SOUND = '%s' AND " +
+                        "WINGS_STATE = '%s'",
+                expectedDuck.color(),
+                expectedDuck.height(),
+                expectedDuck.material(),
+                expectedDuck.sound(),
+                expectedDuck.wingsState()
+        );
+
+        runner.$(query(testDb)
+                .statement(validateSql)
+                .validate("COUNT(*)", "1"));
     }
 }

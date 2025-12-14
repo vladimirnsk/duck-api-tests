@@ -1,7 +1,6 @@
 package autotests.tests;
 
 import autotests.clients.DuckActionsClient;
-import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
@@ -28,11 +27,9 @@ public class DuckDelete extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckPropertiesDelete);
-        extractFromResponse(runner, "$.id", "duckId");
-        deleteDuck(runner, "${duckId}");
+        createDuckDB(runner, duckPropertiesDelete);
 
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck is deleted");
-        validateResponsePayload(runner, messageResponse, "OK");
+        findDuckByPropertiesDB(runner, duckPropertiesDelete);
+        deleteDuckByIdDB(runner);
     }
 }

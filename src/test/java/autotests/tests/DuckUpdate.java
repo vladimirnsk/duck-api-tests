@@ -1,7 +1,6 @@
 package autotests.tests;
 
 import autotests.clients.DuckActionsClient;
-import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
@@ -28,17 +27,16 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorHeight);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckUpdateColorHeight);
+        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
 
         duckUpdateColorHeight
                 .color("Black")
                 .height(4.55);
 
-        updateDuck(runner, "${duckId}", duckUpdateColorHeight);
-
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponsePayload(runner, messageResponse, "OK");
+        updateDuckByIdDB(runner, duckUpdateColorHeight);
+        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
+        deleteDuckByIdDB(runner);
     }
 
     @Test(description = "Проверка обновление параметров color и sound для уточки")
@@ -51,16 +49,15 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorSound);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckUpdateColorSound);
+        findDuckByPropertiesDB(runner, duckUpdateColorSound);
 
         duckUpdateColorSound
                 .color("While")
                 .sound("quack-quack");
 
-        updateDuck(runner, "${duckId}", duckUpdateColorSound);
-
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponsePayload(runner, messageResponse, "OK");
+        updateDuckByIdDB(runner, duckUpdateColorSound);
+        findDuckByPropertiesDB(runner, duckUpdateColorSound);
+        deleteDuckByIdDB(runner);
     }
 }

@@ -19,7 +19,7 @@ public class DuckCreate extends DuckActionsClient {
 
     @Test(description = "Проверка создание уточки с материалом rubber")
     @CitrusTest
-    public void createDuckMaterialRubber(@Optional @CitrusResource TestCaseRunner runner) {
+    public void createDuckMaterialRubber(@Optional @CitrusResource TestCaseRunner runner) throws Exception {
         DuckProperties duckCreateRubber = new DuckProperties()
                 .color("Black")
                 .height(1.11)
@@ -27,13 +27,13 @@ public class DuckCreate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckCreateRubber);
-        validateResponseResources(runner, "duckCreateTest/createMaterialRubber.json");
+        createDuckDB(runner, duckCreateRubber);
+        validateResponseResourcesDB(runner, "duckCreateTest/createMaterialRubber.json");
     }
 
     @Test(description = "Проверка создание уточки с материалом wood")
     @CitrusTest
-    public void createDuckMaterialWood(@Optional @CitrusResource TestCaseRunner runner) {
+    public void createDuckMaterialWood(@Optional @CitrusResource TestCaseRunner runner) throws Exception {
         DuckProperties duckCreateWood = new DuckProperties()
                 .color("While")
                 .height(2.22)
@@ -41,8 +41,8 @@ public class DuckCreate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("FIXED");
 
-        createDuck(runner, duckCreateWood);
-        validateResponseResources(runner, "duckCreateTest/createMaterialWood.json");
+        createDuckDB(runner, duckCreateWood);
+        validateResponseResourcesDB(runner, "duckCreateTest/createMaterialWood.json");
     }
 
     @Test(description = "Проверка создание уточки с материалом iron")
@@ -50,12 +50,12 @@ public class DuckCreate extends DuckActionsClient {
     public void createDuckMaterialIron(@Optional @CitrusResource TestCaseRunner runner) {
         DuckProperties duckCreateIron = new DuckProperties()
                 .color("Blue")
-                .height(3.33)
+                .height(3.34)
                 .material("iron")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckCreateIron);
-        validateFullResponse(runner, duckCreateIron);
+        createDuckDB(runner, duckCreateIron);
+        findDuckByPropertiesDB(runner, duckCreateIron);
     }
 }
