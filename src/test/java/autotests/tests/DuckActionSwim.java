@@ -28,8 +28,8 @@ public class DuckActionSwim extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckSwim);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckSwim);
+        findDuckByPropertiesDB(runner, duckSwim);
 
         duckSwim(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");

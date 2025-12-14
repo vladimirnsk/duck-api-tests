@@ -27,8 +27,8 @@ public class DuckActionFly extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckFlyActive);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckFlyActive);
+        findDuckByPropertiesDB(runner, duckFlyActive);
 
         duckFly(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I am flying :)");
@@ -45,8 +45,8 @@ public class DuckActionFly extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("FIXED");
 
-        createDuck(runner, duckFlyFixed);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckFlyFixed);
+        findDuckByPropertiesDB(runner, duckFlyFixed);
 
         duckFly(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I can not fly :C");
@@ -63,8 +63,8 @@ public class DuckActionFly extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("UNDEFINED");
 
-        createDuck(runner, duckFlyUndefined);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckFlyUndefined);
+        findDuckByPropertiesDB(runner, duckFlyUndefined);
 
         duckFly(runner, "${duckId}");
         validateResponseString(runner, "{\n \"message\": \"Wings are not detected :(\"\n}", "OK");

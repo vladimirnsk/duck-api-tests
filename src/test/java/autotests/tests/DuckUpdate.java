@@ -27,8 +27,8 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorHeight);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckUpdateColorHeight);
+        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
 
         duckUpdateColorHeight
                 .color("Black")
@@ -48,8 +48,8 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorSound);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckUpdateColorSound);
+        findDuckByPropertiesDB(runner, duckUpdateColorSound);
 
         duckUpdateColorSound
                 .color("While")

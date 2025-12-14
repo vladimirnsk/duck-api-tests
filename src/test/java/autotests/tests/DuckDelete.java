@@ -32,20 +32,4 @@ public class DuckDelete extends DuckActionsClient {
         findDuckByPropertiesDB(runner, duckPropertiesDelete);
         deleteDuckByIdDB(runner);
     }
-
-//    @Test(description = "Проверка удаление существующей уточки")
-//    @CitrusTest
-//    public void successDeleteDuck1(@Optional @CitrusResource TestCaseRunner runner) {
-//        DuckProperties duckPropertiesDelete = new DuckProperties()
-//                .color("Green")
-//                .height(3.33)
-//                .material("rubber")
-//                .sound("quack")
-//                .wingsState("ACTIVE");
-//
-//        createDuck(runner, duckPropertiesDelete);
-//
-//        extractFromResponse(runner, "$.id", "duckId");
-//        deleteDuck(runner, "${duckId}");
-//    }
 }

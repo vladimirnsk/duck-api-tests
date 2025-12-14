@@ -56,8 +56,8 @@ public class DuckActionsClient extends BaseTest {
         while (attempt < maxAttempts) {
             attempt++;
 
-            createDuck(runner, properties);
-            extractFromResponse(runner, "$.id", "duckId");
+            createDuckDB(runner, properties);
+            findDuckByPropertiesDB(runner, properties);
 
             String idStr = context.getVariable("duckId");
             if (idStr == null || idStr.isEmpty()) {
@@ -180,7 +180,6 @@ public class DuckActionsClient extends BaseTest {
     public void validateResponse(TestCaseRunner runner) {
         validateClearResponseValue(runner);
     }
-
 
     @Step("Валидировать при передачи строки сообщения")
     public void validateResponseString(TestCaseRunner runner, String responseMessage, String status) {
