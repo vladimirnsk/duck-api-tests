@@ -27,16 +27,15 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuckDB(runner, duckUpdateColorHeight);
-        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
+        createDuck(runner, duckUpdateColorHeight);
+        extractFromResponse(runner, "$.id", "duckId");
 
         duckUpdateColorHeight
                 .color("Black")
                 .height(4.55);
 
-        updateDuckByIdDB(runner, duckUpdateColorHeight);
+        updateDuck(runner, "${duckId}", duckUpdateColorHeight);
         findDuckByPropertiesDB(runner, duckUpdateColorHeight);
-        deleteDuckByIdDB(runner);
     }
 
     @Test(description = "Проверка обновление параметров color и sound для уточки")
@@ -49,15 +48,14 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuckDB(runner, duckUpdateColorSound);
-        findDuckByPropertiesDB(runner, duckUpdateColorSound);
+        createDuck(runner, duckUpdateColorSound);
+        extractFromResponse(runner, "$.id", "duckId");
 
         duckUpdateColorSound
                 .color("While")
                 .sound("quack-quack");
 
-        updateDuckByIdDB(runner, duckUpdateColorSound);
+        updateDuck(runner, "${duckId}", duckUpdateColorSound);
         findDuckByPropertiesDB(runner, duckUpdateColorSound);
-        deleteDuckByIdDB(runner);
     }
 }
