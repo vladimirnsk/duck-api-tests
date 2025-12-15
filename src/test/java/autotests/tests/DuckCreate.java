@@ -52,6 +52,5 @@ public class DuckCreate extends DuckActionsClient {
 
         createDuck(runner, duckCreateIron);
         validateFullResponse(runner, duckCreateIron);
-        ;
     }
 }
