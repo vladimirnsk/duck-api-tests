@@ -20,19 +20,22 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и height для уточки")
     @CitrusTest
     public void updateDuckParametersColorHeight(@Optional @CitrusResource TestCaseRunner runner) {
-        DuckProperties duckUpdateColorHeight = new DuckProperties()
+        DuckProperties duckOriginColorHeight = new DuckProperties()
                 .color("Green")
                 .height(4.44)
                 .material("rubber")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuckDB(runner, duckUpdateColorHeight);
-        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
+        createDuckDB(runner, duckOriginColorHeight);
+        findDuckByPropertiesDB(runner, duckOriginColorHeight);
 
-        duckUpdateColorHeight
+        DuckProperties duckUpdateColorHeight = new DuckProperties()
                 .color("Black")
-                .height(4.55);
+                .height(4.55)
+                .material("rubber")
+                .sound("quack")
+                .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorHeight);
         findDuckByPropertiesDB(runner, duckUpdateColorHeight);
@@ -41,19 +44,22 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и sound для уточки")
     @CitrusTest
     public void updateDuckParametersColorSound(@Optional @CitrusResource TestCaseRunner runner) {
-        DuckProperties duckUpdateColorSound = new DuckProperties()
+        DuckProperties duckOriginColorSound = new DuckProperties()
                 .color("Blue")
                 .height(5.55)
                 .material("rubber")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuckDB(runner, duckUpdateColorSound);
-        findDuckByPropertiesDB(runner, duckUpdateColorSound);
+        createDuckDB(runner, duckOriginColorSound);
+        findDuckByPropertiesDB(runner, duckOriginColorSound);
 
-        duckUpdateColorSound
+        DuckProperties duckUpdateColorSound = new DuckProperties()
                 .color("While")
-                .sound("quack-quack");
+                .height(5.55)
+                .material("rubber")
+                .sound("quack-quack")
+                .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorSound);
         findDuckByPropertiesDB(runner, duckUpdateColorSound);
