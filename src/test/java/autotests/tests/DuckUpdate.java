@@ -16,19 +16,22 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и height для уточки")
     @CitrusTest
     public void updateDuckParametersColorHeight(@Optional @CitrusResource TestCaseRunner runner) {
-        DuckProperties duckUpdateColorHeight = new DuckProperties()
+        DuckProperties duckOriginColorHeight = new DuckProperties()
                 .color("Green")
                 .height(4.44)
                 .material("rubber")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorHeight);
+        createDuck(runner, duckOriginColorHeight);
         extractFromResponse(runner, "$.id", "duckId");
 
-        duckUpdateColorHeight
+        DuckProperties duckUpdateColorHeight = new DuckProperties()
                 .color("Black")
-                .height(4.55);
+                .height(4.55)
+                .material("rubber")
+                .sound("quack")
+                .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorHeight);
 
@@ -39,21 +42,24 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и sound для уточки")
     @CitrusTest
     public void updateDuckParametersColorSound(@Optional @CitrusResource TestCaseRunner runner) {
-        DuckProperties duckUpdateColorSound = new DuckProperties()
+        DuckProperties duckOriginColorSound = new DuckProperties()
                 .color("Blue")
                 .height(5.55)
                 .material("rubber")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckUpdateColorSound);
+        createDuck(runner, duckOriginColorSound);
         extractFromResponse(runner, "$.id", "duckId");
 
-        duckUpdateColorSound
+        DuckProperties duckUpdateColorHeight = new DuckProperties()
                 .color("While")
-                .sound("quack-quack");
+                .height(5.55)
+                .material("rubber")
+                .sound("quack-quack")
+                .wingsState("ACTIVE");
 
-        updateDuck(runner, "${duckId}", duckUpdateColorSound);
+        updateDuck(runner, "${duckId}", duckUpdateColorHeight);
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
         validateResponsePayload(runner, messageResponse, "OK");
