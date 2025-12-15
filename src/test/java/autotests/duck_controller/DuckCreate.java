@@ -58,6 +58,7 @@ public class DuckCreate extends TestNGCitrusSpringSupport {
                         .response(HttpStatus.OK)
                         .message()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .extract(fromBody().expression("$.id", "duckId"))
                         .validate(jsonPath()
                                 .expression("$.id", "@isNumber()@")
                                 .expression("$.color", expectedColor)
@@ -65,7 +66,7 @@ public class DuckCreate extends TestNGCitrusSpringSupport {
                                 .expression("$.material", expectedMaterial)
                                 .expression("$.sound", expectedSound)
                                 .expression("$.wingsState", expectedWingsState))
-                        .extract(fromBody().expression("$.id", "duckId"))
+
         );
     }
 }
