@@ -31,6 +31,7 @@ public class DuckActionSwim extends TestNGCitrusSpringSupport {
     @Test(description = "Проверка способности плавать для несуществующей утки")
     @CitrusTest
     public void invalidIdSwim(@Optional @CitrusResource TestCaseRunner runner) {
+        deleteDuck(runner,"912345");
         duckSwim(runner, "912345");
 
         validateResponse(runner, "{\n \"message\": \"Paws are not found ((((\"\n}", "NOT_FOUND");
@@ -88,5 +89,14 @@ public class DuckActionSwim extends TestNGCitrusSpringSupport {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(responseMessage)
         );
+    }
+
+    public void deleteDuck(TestCaseRunner runner, String id) {
+        runner.$(
+                http()
+                        .client(baseURL)
+                        .send()
+                        .delete("/api/duck/delete")
+                        .queryParam("id", id));
     }
 }
