@@ -51,6 +51,6 @@ public class DuckCreate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         createDuck(runner, duckCreateIron);
-        validateFullResponse(runner, duckCreateIron);
+        validateResponseWithoutId(runner, duckCreateIron);
     }
 }

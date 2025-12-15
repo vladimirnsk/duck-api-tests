@@ -28,7 +28,7 @@ public class DuckActionProperties extends DuckActionsClient {
         duckProperties(runner, "${duckId}");
 
         //validateFullResponse(runner, "Green", 11110, "wood", "quack", "ACTIVE");
-        validateResponse(runner);
+        validateEmptyResponse(runner);
     }
 
     @Test(description = "Проверка свойств утки с нечетным ID и материалом rubber")
@@ -44,6 +44,6 @@ public class DuckActionProperties extends DuckActionsClient {
         createDuckEnsuringIdParity(runner, context, duckPropertiesOdd, false);
         duckProperties(runner, "${duckId}");
 
-        validateFullResponse(runner, "Blue", 1212, "rubber", "quack", "ACTIVE");
+        validateResponseWithoutId(runner, "Blue", 1212, "rubber", "quack", "ACTIVE");
     }
 }

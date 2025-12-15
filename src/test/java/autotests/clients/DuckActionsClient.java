@@ -151,7 +151,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
         );
     }
 
-    public void validateFullResponse(TestCaseRunner runner, DuckProperties properties) {
+    public void validateResponseWithoutId(TestCaseRunner runner, DuckProperties properties) {
         runner.$(
                 http()
                         .client(duckService)
@@ -168,7 +168,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", properties.wingsState())));
     }
 
-    public void validateFullResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
+    public void validateResponseWithoutId(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
         runner.$(
                 http()
                         .client(duckService)
@@ -184,7 +184,7 @@ public class DuckActionsClient extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", WingsState)));
     }
 
-    public void validateResponse(TestCaseRunner runner) {
+    public void validateEmptyResponse(TestCaseRunner runner) {
         runner.$(
                 http()
                         .client(duckService)
