@@ -40,7 +40,18 @@ public class DuckActionSwim extends DuckActionsClient {
     @Test(description = "Проверка способности плавать для несуществующей утки")
     @CitrusTest
     public void invalidIdSwim(@Optional @CitrusResource TestCaseRunner runner) {
-        duckSwim(runner, "912345");
+        DuckProperties duckSwim = new DuckProperties()
+                .color("Yellow")
+                .height(9.99)
+                .material("rubber")
+                .sound("quack")
+                .wingsState("ACTIVE");
+
+        createDuckDB(runner, duckSwim);
+        findDuckByPropertiesDB(runner, duckSwim);
+        deleteDuckByIdDB(runner);
+
+        duckSwim(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
         validateResponsePayload(runner, messageResponse, "NOT_FOUND");
