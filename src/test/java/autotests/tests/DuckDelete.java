@@ -20,6 +20,7 @@ public class DuckDelete extends DuckActionsClient {
     @Test(description = "Проверка удаление существующей уточки")
     @CitrusTest
     public void successDeleteDuck(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckPropertiesDelete = new DuckProperties()
                 .color("Green")
                 .height(3.33)

@@ -21,6 +21,7 @@ public class DuckActionSwim extends DuckActionsClient {
     @Test(description = "Проверка способности плавать для существующей утки")
     @CitrusTest
     public void successSwim(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckSwim = new DuckProperties()
                 .color("Red")
                 .height(9.99)
@@ -40,6 +41,7 @@ public class DuckActionSwim extends DuckActionsClient {
     @Test(description = "Проверка способности плавать для несуществующей утки")
     @CitrusTest
     public void invalidIdSwim(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckSwim = new DuckProperties()
                 .color("Yellow")
                 .height(9.99)

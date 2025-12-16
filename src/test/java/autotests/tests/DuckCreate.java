@@ -20,6 +20,7 @@ public class DuckCreate extends DuckActionsClient {
     @Test(description = "Проверка создание уточки с материалом rubber")
     @CitrusTest
     public void createDuckMaterialRubber(@Optional @CitrusResource TestCaseRunner runner) throws Exception {
+        clearDuckTable(runner);
         DuckProperties duckCreateRubber = new DuckProperties()
                 .color("Black")
                 .height(1.11)
@@ -34,6 +35,7 @@ public class DuckCreate extends DuckActionsClient {
     @Test(description = "Проверка создание уточки с материалом wood")
     @CitrusTest
     public void createDuckMaterialWood(@Optional @CitrusResource TestCaseRunner runner) throws Exception {
+        clearDuckTable(runner);
         DuckProperties duckCreateWood = new DuckProperties()
                 .color("While")
                 .height(2.22)
@@ -48,6 +50,7 @@ public class DuckCreate extends DuckActionsClient {
     @Test(description = "Проверка создание уточки с материалом iron")
     @CitrusTest
     public void createDuckMaterialIron(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckCreateIron = new DuckProperties()
                 .color("Blue")
                 .height(3.34)

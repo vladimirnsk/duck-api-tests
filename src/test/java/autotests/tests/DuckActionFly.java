@@ -17,27 +17,29 @@ import org.testng.annotations.Test;
 @Story("Эндпоинт /api/duck/action/fly")
 public class DuckActionFly extends DuckActionsClient {
 
-    @Test(description = "Проверка полета уточки с крыльями ACTIVE")
-    @CitrusTest
-    public void activeWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
-        DuckProperties duckFlyActive = new DuckProperties()
-                .color("Green")
-                .height(6.66)
-                .material("iron")
-                .sound("quack")
-                .wingsState("ACTIVE");
+        @Test(description = "Проверка полета уточки с крыльями ACTIVE")
+        @CitrusTest
+        public void activeWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
+            clearDuckTable(runner);
+            DuckProperties duckFlyActive = new DuckProperties()
+                    .color("Green")
+                    .height(6.66)
+                    .material("iron")
+                    .sound("quack")
+                    .wingsState("ACTIVE");
 
-        createDuckDB(runner, duckFlyActive);
-        findDuckByPropertiesDB(runner, duckFlyActive);
+            createDuckDB(runner, duckFlyActive);
+            findDuckByPropertiesDB(runner, duckFlyActive);
 
-        duckFly(runner, "${duckId}");
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("I am flying :)");
-        validateResponsePayload(runner, messageResponse, "OK");
-    }
+            duckFly(runner, "${duckId}");
+            DuckMessageResponse messageResponse = new DuckMessageResponse().message("I am flying :)");
+            validateResponsePayload(runner, messageResponse, "OK");
+        }
 
     @Test(description = "Проверка полета уточки с крыльями FIXED")
     @CitrusTest
     public void fixedWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckFlyFixed = new DuckProperties()
                 .color("Pink")
                 .height(7.77)
@@ -56,6 +58,7 @@ public class DuckActionFly extends DuckActionsClient {
     @Test(description = "Проверка полета уточки с крыльями UNDEFINED")
     @CitrusTest
     public void undefinedWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckFlyUndefined = new DuckProperties()
                 .color("Yellow")
                 .height(8.88)

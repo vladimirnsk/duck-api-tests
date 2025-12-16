@@ -31,7 +31,6 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку SQL")
     public void createDuckDB(TestCaseRunner runner, DuckProperties properties) {
-        deleteDuckByPropertiesDB(runner, properties);
         String insertSql = String.format(
                 Locale.US,
                 "INSERT INTO DUCK (ID, COLOR, HEIGHT, MATERIAL, SOUND, WINGS_STATE) " +
@@ -131,6 +130,12 @@ public class DuckActionsClient extends BaseTest {
                 .statement(deleteSql));
     }
 
+    @Step("Очистить таблицу")
+    public void clearDuckTable(TestCaseRunner runner) {
+        runner.$(sql(testDb)
+                .statement("TRUNCATE TABLE DUCK"));
+    }
+
     @Step("Удалить уточку по ID SQL")
     public void deleteDuckByIdDB(TestCaseRunner runner) {
         runner.$(sql(testDb)
@@ -220,7 +225,7 @@ public class DuckActionsClient extends BaseTest {
     public void findDuckByPropertiesDB(TestCaseRunner runner, DuckProperties properties) {
         String searchSql = String.format(
                 Locale.US,
-                "SELECT * FROM DUCK WHERE " +
+                "SELECT MAX(ID) as ID FROM DUCK WHERE " +
                         "COLOR = '%s' AND " +
                         "HEIGHT = %.6f AND " +
                         "MATERIAL = '%s' AND " +
@@ -236,7 +241,6 @@ public class DuckActionsClient extends BaseTest {
         runner.$(query(testDb)
                 .statement(searchSql)
                 .extract("ID", "duckId"));
-
     }
 
     @Step("Валидировать JSON для SQL ")
