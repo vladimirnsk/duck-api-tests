@@ -27,7 +27,7 @@ public class DuckActionQuack extends DuckActionsClient {
         //final String SOUND = "quack";
         final String SOUND = "moo";
 
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5)");
         DuckProperties duckQuackEven = new DuckProperties()
                 .color("Black")
                 .height(10.0)
@@ -49,7 +49,7 @@ public class DuckActionQuack extends DuckActionsClient {
         final int SOUND_COUNT = 4;
         final String SOUND = "quack";
 
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5)");
         DuckProperties duckQuackOdd = new DuckProperties()
                 .color("Blue")
                 .height(10.10)

@@ -20,7 +20,7 @@ public class DuckDelete extends DuckActionsClient {
     @Test(description = "Проверка удаление существующей уточки")
     @CitrusTest
     public void successDeleteDuck(@Optional @CitrusResource TestCaseRunner runner) {
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5)");
         DuckProperties duckPropertiesDelete = new DuckProperties()
                 .color("Green")
                 .height(3.33)
@@ -29,8 +29,6 @@ public class DuckDelete extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         createDuckDB(runner, duckPropertiesDelete);
-
-        findDuckByPropertiesDB(runner, duckPropertiesDelete);
         deleteDuckByIdDB(runner);
     }
 }

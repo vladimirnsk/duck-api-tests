@@ -34,8 +34,7 @@ public class DuckActionsClient extends BaseTest {
         String insertSql = String.format(
                 Locale.US,
                 "INSERT INTO DUCK (ID, COLOR, HEIGHT, MATERIAL, SOUND, WINGS_STATE) " +
-                        "SELECT COALESCE(MAX(ID), 0) + 1, '%s', %.2f, '%s', '%s', '%s' " +
-                        "FROM DUCK",
+                        "VALUES (${duckId}, '%s', %.2f, '%s', '%s', '%s')",
                 properties.color(),
                 properties.height(),
                 properties.material(),
@@ -49,32 +48,32 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку в зависимости от четности")
     public void createDuckEnsuringIdParity(TestCaseRunner runner, TestContext context, DuckProperties properties, boolean shouldBeEven) {
-        int maxAttempts = 5;
-        int attempt = 0;
 
-        while (attempt < maxAttempts) {
-            attempt++;
 
-            createDuckDB(runner, properties);
-            findDuckByPropertiesDB(runner, properties);
-
-            String idStr = context.getVariable("duckId");
-            if (idStr == null || idStr.isEmpty()) {
-                continue;
-            }
-            try {
-                long idValue = Long.parseLong(idStr);
-                boolean isEven = idValue % 2 == 0;
-
-                if (shouldBeEven == isEven) {
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid ID format on attempt " + attempt + ": " + e.getMessage());
-            }
+        String idStr = context.getVariable("duckId");
+        if (idStr == null || idStr.isEmpty()) {
+            runner.variable("duckId", "citrus:randomNumber(5)");
+            idStr = context.getVariable("duckId");
         }
 
-        throw new RuntimeException("Failed to create duck with desired ID parity after " + maxAttempts + " attempts. Last ID: " + context.getVariable("duckId"));
+        try {
+            long idValue = Long.parseLong(idStr);
+            boolean isEven = idValue % 2 == 0;
+
+            if (shouldBeEven && !isEven) {
+                idValue += 1;  // +1 для чётного (например, 1 -> 2, 3 -> 4)
+            } else if (!shouldBeEven && isEven) {
+                idValue += 1;  // +1 для нечётного (например, 0 -> 1, 2 -> 3, 4 -> 5; если нужно -1, замени на -=1)
+            }
+
+            // Обновляем в контексте (как строку)
+            context.setVariable("duckId", String.valueOf(idValue));
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid ID format: " + idStr, e);
+        }
+
+        // Шаг 3: Только теперь создаём утку с правильным ID
+        createDuckDB(runner, properties);  // Использует обновлённый ${duckId}
     }
 
     @Step("Обновить характеристики уточки")
@@ -225,12 +224,14 @@ public class DuckActionsClient extends BaseTest {
     public void findDuckByPropertiesDB(TestCaseRunner runner, DuckProperties properties) {
         String searchSql = String.format(
                 Locale.US,
-                "SELECT MAX(ID) as ID FROM DUCK WHERE " +
+                "SELECT COUNT(*) FROM DUCK WHERE " +
+                        "ID = %s AND " +
                         "COLOR = '%s' AND " +
                         "HEIGHT = %.6f AND " +
                         "MATERIAL = '%s' AND " +
                         "SOUND = '%s' AND " +
                         "WINGS_STATE = '%s'",
+                "${duckId}",
                 properties.color(),
                 properties.height(),
                 properties.material(),
@@ -239,8 +240,7 @@ public class DuckActionsClient extends BaseTest {
         );
 
         runner.$(query(testDb)
-                .statement(searchSql)
-                .extract("ID", "duckId"));
+                .statement(searchSql));
     }
 
     @Step("Валидировать JSON для SQL ")
@@ -259,6 +259,7 @@ public class DuckActionsClient extends BaseTest {
         String validateSql = String.format(
                 Locale.US,
                 "SELECT COUNT(*) FROM DUCK WHERE " +
+                        "ID = ${duckId} AND " +
                         "COLOR = '%s' AND " +
                         "HEIGHT = %.6f AND " +
                         "MATERIAL = '%s' AND " +
