@@ -25,7 +25,6 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку")
     public void createDuck(TestCaseRunner runner, DuckProperties properties) {
-        deleteDuckByPropertiesDB(runner,properties);
         sendPostRequestCreate(runner, "/api/duck/create", properties);
     }
 
@@ -49,7 +48,6 @@ public class DuckActionsClient extends BaseTest {
     @Step("Создать уточку в зависимости от четности")
     public void createDuckEnsuringIdParity(TestCaseRunner runner, TestContext context, DuckProperties properties, boolean shouldBeEven) {
 
-
         String idStr = context.getVariable("duckId");
         if (idStr == null || idStr.isEmpty()) {
             runner.variable("duckId", "citrus:randomNumber(5)");
@@ -61,19 +59,16 @@ public class DuckActionsClient extends BaseTest {
             boolean isEven = idValue % 2 == 0;
 
             if (shouldBeEven && !isEven) {
-                idValue += 1;  // +1 для чётного (например, 1 -> 2, 3 -> 4)
+                idValue += 1;
             } else if (!shouldBeEven && isEven) {
-                idValue += 1;  // +1 для нечётного (например, 0 -> 1, 2 -> 3, 4 -> 5; если нужно -1, замени на -=1)
+                idValue += 1;
             }
-
-            // Обновляем в контексте (как строку)
             context.setVariable("duckId", String.valueOf(idValue));
         } catch (NumberFormatException e) {
             throw new RuntimeException("Invalid ID format: " + idStr, e);
         }
 
-        // Шаг 3: Только теперь создаём утку с правильным ID
-        createDuckDB(runner, properties);  // Использует обновлённый ${duckId}
+        createDuckDB(runner, properties);
     }
 
     @Step("Обновить характеристики уточки")
@@ -127,12 +122,6 @@ public class DuckActionsClient extends BaseTest {
 
         runner.$(sql(testDb)
                 .statement(deleteSql));
-    }
-
-    @Step("Очистить таблицу")
-    public void clearDuckTable(TestCaseRunner runner) {
-        runner.$(sql(testDb)
-                .statement("TRUNCATE TABLE DUCK"));
     }
 
     @Step("Удалить уточку по ID SQL")
