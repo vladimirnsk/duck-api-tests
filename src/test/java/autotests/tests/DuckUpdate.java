@@ -1,21 +1,26 @@
 package autotests.tests;
 
 import autotests.clients.DuckActionsClient;
-import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-controller")
+@Feature("Обновление характеристик уточки")
+@Story("Эндпоинт /api/duck/update")
 public class DuckUpdate extends DuckActionsClient {
 
     @Test(description = "Проверка обновление параметров color и height для уточки")
     @CitrusTest
     public void updateDuckParametersColorHeight(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckOriginColorHeight = new DuckProperties()
                 .color("Green")
                 .height(4.44)
@@ -23,8 +28,8 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckOriginColorHeight);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckOriginColorHeight);
+        findDuckByPropertiesDB(runner, duckOriginColorHeight);
 
         DuckProperties duckUpdateColorHeight = new DuckProperties()
                 .color("Black")
@@ -34,14 +39,13 @@ public class DuckUpdate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorHeight);
-
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponsePayload(runner, messageResponse, "OK");
+        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
     }
 
     @Test(description = "Проверка обновление параметров color и sound для уточки")
     @CitrusTest
     public void updateDuckParametersColorSound(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckOriginColorSound = new DuckProperties()
                 .color("Blue")
                 .height(5.55)
@@ -49,19 +53,17 @@ public class DuckUpdate extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckOriginColorSound);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckOriginColorSound);
+        findDuckByPropertiesDB(runner, duckOriginColorSound);
 
-        DuckProperties duckUpdateColorHeight = new DuckProperties()
+        DuckProperties duckUpdateColorSound = new DuckProperties()
                 .color("While")
                 .height(5.55)
                 .material("rubber")
                 .sound("quack-quack")
                 .wingsState("ACTIVE");
 
-        updateDuck(runner, "${duckId}", duckUpdateColorHeight);
-
-        DuckMessageResponse messageResponse = new DuckMessageResponse().message("Duck with id = ${duckId} is updated");
-        validateResponsePayload(runner, messageResponse, "OK");
+        updateDuck(runner, "${duckId}", duckUpdateColorSound);
+        findDuckByPropertiesDB(runner, duckUpdateColorSound);
     }
 }

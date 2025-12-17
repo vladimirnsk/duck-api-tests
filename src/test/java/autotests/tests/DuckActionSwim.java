@@ -6,16 +6,22 @@ import autotests.payloads.DuckProperties;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-actions-controller")
+@Feature("Плаванье уточки")
+@Story("Эндпоинт /api/duck/action/swim")
 public class DuckActionSwim extends DuckActionsClient {
 
     // TODO: SHIFT-AQA-01
     @Test(description = "Проверка способности плавать для существующей утки")
     @CitrusTest
     public void successSwim(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckSwim = new DuckProperties()
                 .color("Red")
                 .height(9.99)
@@ -23,8 +29,8 @@ public class DuckActionSwim extends DuckActionsClient {
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckSwim);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckSwim);
+        findDuckByPropertiesDB(runner, duckSwim);
 
         duckSwim(runner, "${duckId}");
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
@@ -35,17 +41,18 @@ public class DuckActionSwim extends DuckActionsClient {
     @Test(description = "Проверка способности плавать для несуществующей утки")
     @CitrusTest
     public void invalidIdSwim(@Optional @CitrusResource TestCaseRunner runner) {
+        clearDuckTable(runner);
         DuckProperties duckSwim = new DuckProperties()
-                .color("Red")
+                .color("Yellow")
                 .height(9.99)
                 .material("rubber")
                 .sound("quack")
                 .wingsState("ACTIVE");
 
-        createDuck(runner, duckSwim);
-        extractFromResponse(runner, "$.id", "duckId");
+        createDuckDB(runner, duckSwim);
+        findDuckByPropertiesDB(runner, duckSwim);
+        deleteDuckByIdDB(runner);
 
-        deleteDuck(runner,"${duckId}");
         duckSwim(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");

@@ -7,10 +7,15 @@ import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.annotations.CitrusResource;
 import com.consol.citrus.annotations.CitrusTest;
 import com.consol.citrus.context.TestContext;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Story;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Test;
 
-
+@Epic("Тесты на duck-actions-controller")
+@Feature("Кряканье уточки")
+@Story("Эндпоинт /api/duck/action/quack")
 public class DuckActionQuack extends DuckActionsClient {
 
     // TODO: SHIFT-AQA-02
@@ -22,6 +27,7 @@ public class DuckActionQuack extends DuckActionsClient {
         //final String SOUND = "quack";
         final String SOUND = "moo";
 
+        clearDuckTable(runner);
         DuckProperties duckQuackEven = new DuckProperties()
                 .color("Black")
                 .height(10.0)
@@ -43,6 +49,7 @@ public class DuckActionQuack extends DuckActionsClient {
         final int SOUND_COUNT = 4;
         final String SOUND = "quack";
 
+        clearDuckTable(runner);
         DuckProperties duckQuackOdd = new DuckProperties()
                 .color("Blue")
                 .height(10.10)
