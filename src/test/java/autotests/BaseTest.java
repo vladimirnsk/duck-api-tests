@@ -31,7 +31,7 @@ public class BaseTest extends TestNGCitrusSpringSupport {
     @Autowired
     protected SingleConnectionDataSource testDb;
 
-    protected void sendPostRequestCreate(TestCaseRunner runner, String path, Object payload) {
+    protected void sendPostRequest(TestCaseRunner runner, String path, Object payload) {
         runner.$(http()
                 .client(duckService)
                 .send()
@@ -42,49 +42,18 @@ public class BaseTest extends TestNGCitrusSpringSupport {
         );
     }
 
-    protected void sendGetRequestId(TestCaseRunner runner, String path, String id) {
+    protected void sendGetRequest(TestCaseRunner runner, HttpClient URL, String path) {
         runner.$(http()
-                .client(duckService)
+                .client(URL)
                 .send()
-                .get(path)
-                .queryParam("id", id)
-        );
+                .get(path));
     }
 
-    protected void sendGetRequestQuack(TestCaseRunner runner, String path, String id, int repetitionCount, int soundCount) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .send()
-                        .get(path)
-                        .queryParam("id", id)
-                        .queryParam("repetitionCount", String.valueOf(repetitionCount))
-                        .queryParam("soundCount", String.valueOf(soundCount))
-        );
-    }
-
-    protected void sendPutRequestUpdate(TestCaseRunner runner, String path, String id, DuckProperties properties) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .send()
-                        .put(path)
-                        .queryParam("id", id)
-                        .queryParam("color", properties.color())
-                        .queryParam("height", String.valueOf(properties.height()))
-                        .queryParam("material", properties.material())
-                        .queryParam("sound", properties.sound())
-                        .queryParam("wingsState", properties.wingsState())
-        );
-    }
-
-    protected void sendDeleteRequestId(TestCaseRunner runner, String path, String id) {
+    protected void sendPutRequest(TestCaseRunner runner, HttpClient URL, String path) {
         runner.$(http()
-                .client(duckService)
+                .client(URL)
                 .send()
-                .delete(path)
-                .queryParam("id", id)
-        );
+                .put(path));
     }
 
     protected void extractFromResponseValue(TestCaseRunner runner, String jsonPath, String variableName) {

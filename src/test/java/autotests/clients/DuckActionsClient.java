@@ -25,7 +25,7 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку")
     public void createDuck(TestCaseRunner runner, DuckProperties properties) {
-        sendPostRequestCreate(runner, "/api/duck/create", properties);
+        sendPostRequest(runner, "/api/duck/create", properties);
     }
 
     @Step("Создать уточку SQL")
@@ -73,7 +73,13 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Обновить характеристики уточки")
     public void updateDuck(TestCaseRunner runner, String id, DuckProperties properties) {
-        sendPutRequestUpdate(runner, "/api/duck/update", id, properties);
+        String path = "/api/duck/update?id=" + id +
+                "&color=" + properties.color() +
+                "&height=" + properties.height() +
+                "&material=" + properties.material() +
+                "&sound=" + properties.sound() +
+                "&wingsState=" + properties.wingsState();
+        sendPutRequest(runner, duckService, path);
     }
 
     @Step("Обновить характеристики уточки")
@@ -100,7 +106,7 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Удалить уточку")
     public void deleteDuck(TestCaseRunner runner, String id) {
-        sendDeleteRequestId(runner, "/api/duck/delete", id);
+        sendGetRequest(runner, duckService, "/api/duck/delete" + "?id=" + id);
     }
 
     @Step("Удалить уточку по характеристикам SQL")
@@ -136,22 +142,23 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Уточка летит")
     public void duckFly(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/fly", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/fly" + "?id=" + id);
     }
 
     @Step("Получить характеристики уточки")
     public void duckProperties(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/properties", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/properties" + "?id=" + id);
     }
 
     @Step("Уточка крякает")
     public void duckQuack(TestCaseRunner runner, String id, int repetitionCount, int soundCount) {
-        sendGetRequestQuack(runner, "/api/duck/action/quack", id, repetitionCount, soundCount);
+        sendGetRequest(runner, duckService, "/api/duck/action/quack" + "?id=" + id + "&repetitionCount="
+                + String.valueOf(repetitionCount) + "&soundCount=" + String.valueOf(soundCount) );
     }
 
     @Step("Уточка плывет")
     public void duckSwim(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/swim", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/swim" + "?id=" + id);
     }
 
     @Step("Получить необходимые данные из ответа")
