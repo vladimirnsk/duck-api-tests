@@ -1,8 +1,6 @@
 package autotests;
 
-import autotests.payloads.DuckMessageResponse;
 import autotests.payloads.DuckProperties;
-import autotests.payloads.DuckSoundResponse;
 import com.consol.citrus.TestCaseRunner;
 import com.consol.citrus.dsl.MessageSupport;
 import com.consol.citrus.http.client.HttpClient;
@@ -56,6 +54,13 @@ public class BaseTest extends TestNGCitrusSpringSupport {
                 .put(path));
     }
 
+    protected void sendDeleteRequest(TestCaseRunner runner, HttpClient URL, String path) {
+        runner.$(http()
+                .client(URL)
+                .send()
+                .delete(path));
+    }
+
     protected void extractFromResponseValue(TestCaseRunner runner, String jsonPath, String variableName) {
         runner.$(http()
                 .client(duckService)
@@ -66,7 +71,7 @@ public class BaseTest extends TestNGCitrusSpringSupport {
         );
     }
 
-    protected void validateFullResponseValue(TestCaseRunner runner, DuckProperties properties) {
+    protected void validateResponsePayloadValue(TestCaseRunner runner, DuckProperties properties) {
         runner.$(
                 http()
                         .client(duckService)
@@ -75,7 +80,7 @@ public class BaseTest extends TestNGCitrusSpringSupport {
                         .message()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .validate(JsonPathMessageValidationContext.Builder.jsonPath()
-                                .expression("$.id", "@isNumber()@")
+                                .expression("$.id", "${duckId}")
                                 .expression("$.color", properties.color())
                                 .expression("$.height", String.valueOf(properties.height()))
                                 .expression("$.material", properties.material())
@@ -83,7 +88,7 @@ public class BaseTest extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", properties.wingsState())));
     }
 
-    protected void validateFullResponseValue(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
+    protected void validatePropertiesResponseValue(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
         runner.$(
                 http()
                         .client(duckService)
@@ -99,7 +104,7 @@ public class BaseTest extends TestNGCitrusSpringSupport {
                                 .expression("$.wingsState", WingsState)));
     }
 
-    protected void validateClearResponseValue(TestCaseRunner runner) {
+    protected void validateEmptyResponseValue(TestCaseRunner runner) {
         runner.$(
                 http()
                         .client(duckService)
@@ -121,24 +126,12 @@ public class BaseTest extends TestNGCitrusSpringSupport {
                         .body(new ClassPathResource(expectedPayload)));
     }
 
-    protected void validateResponsePayloadValue(TestCaseRunner runner, DuckMessageResponse Message, String status) {
+    protected <T> void validateResponse(TestCaseRunner runner, T expectedResponse, String status) {
         runner.$(
                 http()
                         .client(duckService)
                         .receive()
                         .response(HttpStatus.valueOf(status.toUpperCase()))
-                        .message()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(new ObjectMappingPayloadBuilder(Message, new ObjectMapper()))
-        );
-    }
-
-    protected void validateResponseSoundValue(TestCaseRunner runner, DuckSoundResponse expectedResponse) {
-        runner.$(
-                http()
-                        .client(duckService)
-                        .receive()
-                        .response(HttpStatus.OK)
                         .message()
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .body(new ObjectMappingPayloadBuilder(expectedResponse, new ObjectMapper()))

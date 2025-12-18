@@ -39,7 +39,7 @@ public class DuckActionQuack extends DuckActionsClient {
         duckQuack(runner, "${duckId}", REPETITION_COUNT, SOUND_COUNT);
 
         DuckSoundResponse soundMessage = new DuckSoundResponse().sound(SOUND);
-        validateResponseSound(runner, soundMessage, REPETITION_COUNT, SOUND_COUNT);
+        validateResponseSound(runner, soundMessage, REPETITION_COUNT, SOUND_COUNT, "OK");
     }
 
     @Test(description = "Проверка способности крякать при нечетном ID")
@@ -61,6 +61,6 @@ public class DuckActionQuack extends DuckActionsClient {
         duckQuack(runner, "${duckId}", REPETITION_COUNT, SOUND_COUNT);
 
         DuckSoundResponse soundMessage = new DuckSoundResponse().sound(SOUND);
-        validateResponseSound(runner, soundMessage, REPETITION_COUNT, SOUND_COUNT);
+        validateResponseSound(runner, soundMessage, REPETITION_COUNT, SOUND_COUNT, "OK");
     }
 }

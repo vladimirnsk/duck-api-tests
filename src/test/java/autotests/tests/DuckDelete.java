@@ -30,5 +30,6 @@ public class DuckDelete extends DuckActionsClient {
 
         createDuckDB(runner, duckPropertiesDelete);
         deleteDuckByIdDB(runner);
+        validateDeleteDuck(runner);
     }
 }

@@ -35,7 +35,7 @@ public class DuckActionSwim extends DuckActionsClient {
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
         //validateResponse(runner, messageResponse,"OK");
-        validateResponsePayload(runner, messageResponse, "NOT_FOUND");
+        validateResponseMessage(runner, messageResponse, "NOT_FOUND");
     }
 
     @Test(description = "Проверка способности плавать для несуществующей утки")
@@ -51,10 +51,11 @@ public class DuckActionSwim extends DuckActionsClient {
 
         createDuckDB(runner, duckSwim);
         deleteDuckByIdDB(runner);
+        validateDeleteDuck(runner);
 
         duckSwim(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("Paws are not found ((((");
-        validateResponsePayload(runner, messageResponse, "NOT_FOUND");
+        validateResponseMessage(runner, messageResponse, "NOT_FOUND");
     }
 }

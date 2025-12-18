@@ -106,7 +106,7 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Удалить уточку")
     public void deleteDuck(TestCaseRunner runner, String id) {
-        sendGetRequest(runner, duckService, "/api/duck/delete" + "?id=" + id);
+        sendDeleteRequest(runner, duckService, "/api/duck/delete" + "?id=" + id);
     }
 
     @Step("Удалить уточку по характеристикам SQL")
@@ -134,10 +134,6 @@ public class DuckActionsClient extends BaseTest {
     public void deleteDuckByIdDB(TestCaseRunner runner) {
         runner.$(sql(testDb)
                 .statement("DELETE FROM DUCK WHERE ID = ${duckId}"));
-
-        runner.$(query(testDb)
-                .statement("SELECT COUNT(*) FROM DUCK WHERE ID = ${duckId}")
-                .validate("COUNT(*)", "0"));
     }
 
     @Step("Уточка летит")
@@ -167,18 +163,18 @@ public class DuckActionsClient extends BaseTest {
     }
 
     @Step("Валидировать по свойствам утки payload")
-    public void validateFullResponse(TestCaseRunner runner, DuckProperties properties) {
-        validateFullResponseValue(runner, properties);
+    public void validatePropertiesResponse(TestCaseRunner runner, DuckProperties properties) {
+        validateResponsePayloadValue(runner, properties);
     }
 
     @Step("Валидировать по свойствам утки string")
-    public void validateFullResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
-        validateFullResponseValue(runner, Color, Height, Material, Sound, WingsState);
+    public void validatePropertiesResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
+        validatePropertiesResponseValue(runner, Color, Height, Material, Sound, WingsState);
     }
 
     @Step("Валидировать пустой ответ")
-    public void validateResponse(TestCaseRunner runner) {
-        validateClearResponseValue(runner);
+    public void validateEmptyResponse(TestCaseRunner runner) {
+        validateEmptyResponseValue(runner);
     }
 
     @Step("Валидировать при передачи строки сообщения")
@@ -200,20 +196,21 @@ public class DuckActionsClient extends BaseTest {
     }
 
     @Step("Валидировать при передачи сообщения")
-    public void validateResponsePayload(TestCaseRunner runner, DuckMessageResponse Message, String status) {
-        validateResponsePayloadValue(runner, Message, status);
+    public void validateResponseMessage(TestCaseRunner runner, DuckMessageResponse Message, String status) {
+        validateResponse(runner, Message, status);
     }
 
     @Step("Валидировать при передачи звука")
     public void validateResponseSound(TestCaseRunner runner, DuckSoundResponse soundMessage,
-                                      int repetitionCount, int soundCount) {
+                                      int repetitionCount, int soundCount, String status) {
 
         String baseSound = soundMessage.sound();
         String singleSound = String.join("-", Collections.nCopies(repetitionCount, baseSound));
         String expectedSound = String.join(", ", Collections.nCopies(soundCount, singleSound));
 
         DuckSoundResponse expectedResponse = new DuckSoundResponse().sound(expectedSound);
-        validateResponseSoundValue(runner, expectedResponse);
+
+        validateResponse(runner, expectedResponse, status);
     }
 
     @Step("Найти уточку по характеристикам SQL")
@@ -248,6 +245,13 @@ public class DuckActionsClient extends BaseTest {
         DuckProperties expectedDuck = mapper.readValue(resource.getInputStream(), DuckProperties.class);
 
         validateDuckInDBByProperties(runner, expectedDuck);
+    }
+
+    @Step("Проверить, что уточка удалена")
+    public void validateDeleteDuck(TestCaseRunner runner) {
+        runner.$(query(testDb)
+                .statement("SELECT COUNT(*) FROM DUCK WHERE ID = ${duckId}")
+                .validate("COUNT(*)", "0"));
     }
 
     @Step("Валидировать уточку в БД по характеристикам")

@@ -33,7 +33,7 @@ public class DuckActionFly extends DuckActionsClient {
         duckFly(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I am flying :)");
-        validateResponsePayload(runner, messageResponse, "OK");
+        validateResponseMessage(runner, messageResponse, "OK");
     }
 
     @Test(description = "Проверка полета уточки с крыльями FIXED")
@@ -52,7 +52,7 @@ public class DuckActionFly extends DuckActionsClient {
         duckFly(runner, "${duckId}");
 
         DuckMessageResponse messageResponse = new DuckMessageResponse().message("I can not fly :C");
-        validateResponsePayload(runner, messageResponse, "OK");
+        validateResponseMessage(runner, messageResponse, "OK");
     }
 
     @Test(description = "Проверка полета уточки с крыльями UNDEFINED")
