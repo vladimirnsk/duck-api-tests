@@ -20,7 +20,7 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и height для уточки")
     @CitrusTest
     public void updateDuckParametersColorHeight(@Optional @CitrusResource TestCaseRunner runner) {
-        runner.variable("duckId","citrus:randomNumber(5)");
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckOriginColorHeight = new DuckProperties()
                 .color("Green")
                 .height(4.44)
@@ -44,7 +44,7 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и sound для уточки")
     @CitrusTest
     public void updateDuckParametersColorSound(@Optional @CitrusResource TestCaseRunner runner) {
-        runner.variable("duckId","citrus:randomNumber(5)");
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckOriginColorSound = new DuckProperties()
                 .color("Blue")
                 .height(5.55)

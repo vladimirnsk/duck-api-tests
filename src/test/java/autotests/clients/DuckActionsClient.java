@@ -50,7 +50,7 @@ public class DuckActionsClient extends BaseTest {
 
         String idStr = context.getVariable("duckId");
         if (idStr == null || idStr.isEmpty()) {
-            runner.variable("duckId", "citrus:randomNumber(5)");
+            runner.variable("duckId", "citrus:randomNumber(5,false)");
             idStr = context.getVariable("duckId");
         }
 
@@ -153,7 +153,7 @@ public class DuckActionsClient extends BaseTest {
     @Step("Уточка крякает")
     public void duckQuack(TestCaseRunner runner, String id, int repetitionCount, int soundCount) {
         sendGetRequest(runner, duckService, "/api/duck/action/quack" + "?id=" + id + "&repetitionCount="
-                + String.valueOf(repetitionCount) + "&soundCount=" + String.valueOf(soundCount) );
+                + repetitionCount + "&soundCount=" + soundCount);
     }
 
     @Step("Уточка плывет")

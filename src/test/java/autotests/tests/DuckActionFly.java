@@ -20,7 +20,7 @@ public class DuckActionFly extends DuckActionsClient {
     @Test(description = "Проверка полета уточки с крыльями ACTIVE")
     @CitrusTest
     public void activeWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
-        runner.variable("duckId", "citrus:randomNumber(5)");
+        runner.variable("duckId", "citrus:randomNumber(5,false)");
         DuckProperties duckFlyActive = new DuckProperties()
                 .color("Green")
                 .height(6.66)
@@ -39,7 +39,7 @@ public class DuckActionFly extends DuckActionsClient {
     @Test(description = "Проверка полета уточки с крыльями FIXED")
     @CitrusTest
     public void fixedWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
-        runner.variable("duckId", "citrus:randomNumber(5)");
+        runner.variable("duckId", "citrus:randomNumber(5,false)");
         DuckProperties duckFlyFixed = new DuckProperties()
                 .color("Pink")
                 .height(7.77)
@@ -58,7 +58,7 @@ public class DuckActionFly extends DuckActionsClient {
     @Test(description = "Проверка полета уточки с крыльями UNDEFINED")
     @CitrusTest
     public void undefinedWingsFly(@Optional @CitrusResource TestCaseRunner runner) {
-        runner.variable("duckId", "citrus:randomNumber(5)");
+        runner.variable("duckId", "citrus:randomNumber(5,false)");
         DuckProperties duckFlyUndefined = new DuckProperties()
                 .color("Yellow")
                 .height(8.88)
