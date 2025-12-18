@@ -20,7 +20,7 @@ public class DuckUpdate extends DuckActionsClient {
     @Test(description = "Проверка обновление параметров color и height для уточки")
     @CitrusTest
     public void updateDuckParametersColorHeight(@Optional @CitrusResource TestCaseRunner runner) {
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckOriginColorHeight = new DuckProperties()
                 .color("Green")
                 .height(4.44)
@@ -29,7 +29,6 @@ public class DuckUpdate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         createDuckDB(runner, duckOriginColorHeight);
-        findDuckByPropertiesDB(runner, duckOriginColorHeight);
 
         DuckProperties duckUpdateColorHeight = new DuckProperties()
                 .color("Black")
@@ -39,13 +38,13 @@ public class DuckUpdate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorHeight);
-        findDuckByPropertiesDB(runner, duckUpdateColorHeight);
+        validateDuckInDBByProperties(runner, duckUpdateColorHeight);
     }
 
     @Test(description = "Проверка обновление параметров color и sound для уточки")
     @CitrusTest
     public void updateDuckParametersColorSound(@Optional @CitrusResource TestCaseRunner runner) {
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckOriginColorSound = new DuckProperties()
                 .color("Blue")
                 .height(5.55)
@@ -54,7 +53,6 @@ public class DuckUpdate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         createDuckDB(runner, duckOriginColorSound);
-        findDuckByPropertiesDB(runner, duckOriginColorSound);
 
         DuckProperties duckUpdateColorSound = new DuckProperties()
                 .color("While")
@@ -64,6 +62,6 @@ public class DuckUpdate extends DuckActionsClient {
                 .wingsState("ACTIVE");
 
         updateDuck(runner, "${duckId}", duckUpdateColorSound);
-        findDuckByPropertiesDB(runner, duckUpdateColorSound);
+        validateDuckInDBByProperties(runner, duckUpdateColorSound);
     }
 }

@@ -25,8 +25,7 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку")
     public void createDuck(TestCaseRunner runner, DuckProperties properties) {
-        deleteDuckByPropertiesDB(runner,properties);
-        sendPostRequestCreate(runner, "/api/duck/create", properties);
+        sendPostRequest(runner, "/api/duck/create", properties);
     }
 
     @Step("Создать уточку SQL")
@@ -34,8 +33,7 @@ public class DuckActionsClient extends BaseTest {
         String insertSql = String.format(
                 Locale.US,
                 "INSERT INTO DUCK (ID, COLOR, HEIGHT, MATERIAL, SOUND, WINGS_STATE) " +
-                        "SELECT COALESCE(MAX(ID), 0) + 1, '%s', %.2f, '%s', '%s', '%s' " +
-                        "FROM DUCK",
+                        "VALUES (${duckId}, '%s', %.2f, '%s', '%s', '%s')",
                 properties.color(),
                 properties.height(),
                 properties.material(),
@@ -49,37 +47,39 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Создать уточку в зависимости от четности")
     public void createDuckEnsuringIdParity(TestCaseRunner runner, TestContext context, DuckProperties properties, boolean shouldBeEven) {
-        int maxAttempts = 5;
-        int attempt = 0;
 
-        while (attempt < maxAttempts) {
-            attempt++;
-
-            createDuckDB(runner, properties);
-            findDuckByPropertiesDB(runner, properties);
-
-            String idStr = context.getVariable("duckId");
-            if (idStr == null || idStr.isEmpty()) {
-                continue;
-            }
-            try {
-                long idValue = Long.parseLong(idStr);
-                boolean isEven = idValue % 2 == 0;
-
-                if (shouldBeEven == isEven) {
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid ID format on attempt " + attempt + ": " + e.getMessage());
-            }
+        String idStr = context.getVariable("duckId");
+        if (idStr == null || idStr.isEmpty()) {
+            runner.variable("duckId", "citrus:randomNumber(5,false)");
+            idStr = context.getVariable("duckId");
         }
 
-        throw new RuntimeException("Failed to create duck with desired ID parity after " + maxAttempts + " attempts. Last ID: " + context.getVariable("duckId"));
+        try {
+            long idValue = Long.parseLong(idStr);
+            boolean isEven = idValue % 2 == 0;
+
+            if (shouldBeEven && !isEven) {
+                idValue += 1;
+            } else if (!shouldBeEven && isEven) {
+                idValue += 1;
+            }
+            context.setVariable("duckId", String.valueOf(idValue));
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid ID format: " + idStr, e);
+        }
+
+        createDuckDB(runner, properties);
     }
 
     @Step("Обновить характеристики уточки")
     public void updateDuck(TestCaseRunner runner, String id, DuckProperties properties) {
-        sendPutRequestUpdate(runner, "/api/duck/update", id, properties);
+        String path = "/api/duck/update?id=" + id +
+                "&color=" + properties.color() +
+                "&height=" + properties.height() +
+                "&material=" + properties.material() +
+                "&sound=" + properties.sound() +
+                "&wingsState=" + properties.wingsState();
+        sendPutRequest(runner, duckService, path);
     }
 
     @Step("Обновить характеристики уточки")
@@ -106,7 +106,7 @@ public class DuckActionsClient extends BaseTest {
 
     @Step("Удалить уточку")
     public void deleteDuck(TestCaseRunner runner, String id) {
-        sendDeleteRequestId(runner, "/api/duck/delete", id);
+        sendDeleteRequest(runner, duckService, "/api/duck/delete" + "?id=" + id);
     }
 
     @Step("Удалить уточку по характеристикам SQL")
@@ -130,40 +130,31 @@ public class DuckActionsClient extends BaseTest {
                 .statement(deleteSql));
     }
 
-    @Step("Очистить таблицу")
-    public void clearDuckTable(TestCaseRunner runner) {
-        runner.$(sql(testDb)
-                .statement("TRUNCATE TABLE DUCK"));
-    }
-
     @Step("Удалить уточку по ID SQL")
     public void deleteDuckByIdDB(TestCaseRunner runner) {
         runner.$(sql(testDb)
                 .statement("DELETE FROM DUCK WHERE ID = ${duckId}"));
-
-        runner.$(query(testDb)
-                .statement("SELECT COUNT(*) FROM DUCK WHERE ID = ${duckId}")
-                .validate("COUNT(*)", "0"));
     }
 
     @Step("Уточка летит")
     public void duckFly(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/fly", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/fly" + "?id=" + id);
     }
 
     @Step("Получить характеристики уточки")
     public void duckProperties(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/properties", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/properties" + "?id=" + id);
     }
 
     @Step("Уточка крякает")
     public void duckQuack(TestCaseRunner runner, String id, int repetitionCount, int soundCount) {
-        sendGetRequestQuack(runner, "/api/duck/action/quack", id, repetitionCount, soundCount);
+        sendGetRequest(runner, duckService, "/api/duck/action/quack" + "?id=" + id + "&repetitionCount="
+                + repetitionCount + "&soundCount=" + soundCount);
     }
 
     @Step("Уточка плывет")
     public void duckSwim(TestCaseRunner runner, String id) {
-        sendGetRequestId(runner, "/api/duck/action/swim", id);
+        sendGetRequest(runner, duckService, "/api/duck/action/swim" + "?id=" + id);
     }
 
     @Step("Получить необходимые данные из ответа")
@@ -172,18 +163,18 @@ public class DuckActionsClient extends BaseTest {
     }
 
     @Step("Валидировать по свойствам утки payload")
-    public void validateFullResponse(TestCaseRunner runner, DuckProperties properties) {
-        validateFullResponseValue(runner, properties);
+    public void validatePropertiesResponse(TestCaseRunner runner, DuckProperties properties) {
+        validateResponsePayloadValue(runner, properties);
     }
 
     @Step("Валидировать по свойствам утки string")
-    public void validateFullResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
-        validateFullResponseValue(runner, Color, Height, Material, Sound, WingsState);
+    public void validatePropertiesResponse(TestCaseRunner runner, String Color, double Height, String Material, String Sound, String WingsState) {
+        validatePropertiesResponseValue(runner, Color, Height, Material, Sound, WingsState);
     }
 
     @Step("Валидировать пустой ответ")
-    public void validateResponse(TestCaseRunner runner) {
-        validateClearResponseValue(runner);
+    public void validateEmptyResponse(TestCaseRunner runner) {
+        validateEmptyResponseValue(runner);
     }
 
     @Step("Валидировать при передачи строки сообщения")
@@ -205,32 +196,35 @@ public class DuckActionsClient extends BaseTest {
     }
 
     @Step("Валидировать при передачи сообщения")
-    public void validateResponsePayload(TestCaseRunner runner, DuckMessageResponse Message, String status) {
-        validateResponsePayloadValue(runner, Message, status);
+    public void validateResponseMessage(TestCaseRunner runner, DuckMessageResponse Message, String status) {
+        validateResponse(runner, Message, status);
     }
 
     @Step("Валидировать при передачи звука")
     public void validateResponseSound(TestCaseRunner runner, DuckSoundResponse soundMessage,
-                                      int repetitionCount, int soundCount) {
+                                      int repetitionCount, int soundCount, String status) {
 
         String baseSound = soundMessage.sound();
         String singleSound = String.join("-", Collections.nCopies(repetitionCount, baseSound));
         String expectedSound = String.join(", ", Collections.nCopies(soundCount, singleSound));
 
         DuckSoundResponse expectedResponse = new DuckSoundResponse().sound(expectedSound);
-        validateResponseSoundValue(runner, expectedResponse);
+
+        validateResponse(runner, expectedResponse, status);
     }
 
     @Step("Найти уточку по характеристикам SQL")
     public void findDuckByPropertiesDB(TestCaseRunner runner, DuckProperties properties) {
         String searchSql = String.format(
                 Locale.US,
-                "SELECT MAX(ID) as ID FROM DUCK WHERE " +
+                "SELECT COUNT(*) FROM DUCK WHERE " +
+                        "ID = %s AND " +
                         "COLOR = '%s' AND " +
                         "HEIGHT = %.6f AND " +
                         "MATERIAL = '%s' AND " +
                         "SOUND = '%s' AND " +
                         "WINGS_STATE = '%s'",
+                "${duckId}",
                 properties.color(),
                 properties.height(),
                 properties.material(),
@@ -239,8 +233,7 @@ public class DuckActionsClient extends BaseTest {
         );
 
         runner.$(query(testDb)
-                .statement(searchSql)
-                .extract("ID", "duckId"));
+                .statement(searchSql));
     }
 
     @Step("Валидировать JSON для SQL ")
@@ -254,11 +247,19 @@ public class DuckActionsClient extends BaseTest {
         validateDuckInDBByProperties(runner, expectedDuck);
     }
 
+    @Step("Проверить, что уточка удалена")
+    public void validateDeleteDuck(TestCaseRunner runner) {
+        runner.$(query(testDb)
+                .statement("SELECT COUNT(*) FROM DUCK WHERE ID = ${duckId}")
+                .validate("COUNT(*)", "0"));
+    }
+
     @Step("Валидировать уточку в БД по характеристикам")
     public void validateDuckInDBByProperties(TestCaseRunner runner, DuckProperties expectedDuck) {
         String validateSql = String.format(
                 Locale.US,
                 "SELECT COUNT(*) FROM DUCK WHERE " +
+                        "ID = ${duckId} AND " +
                         "COLOR = '%s' AND " +
                         "HEIGHT = %.6f AND " +
                         "MATERIAL = '%s' AND " +

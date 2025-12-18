@@ -22,7 +22,7 @@ public class DuckActionProperties extends DuckActionsClient {
     @Test(description = "Проверка свойств утки с четным ID и материалом wood")
     @CitrusTest
     public void verifyEvenIdWithWood(@Optional @CitrusResource TestCaseRunner runner, @CitrusResource TestContext context) {
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckPropertiesEven= new DuckProperties()
                 .color("Green")
                 .height(11.11)
@@ -34,13 +34,13 @@ public class DuckActionProperties extends DuckActionsClient {
         duckProperties(runner, "${duckId}");
 
         //validateFullResponse(runner, "Green", 11110, "wood", "quack", "ACTIVE");
-        validateResponse(runner);
+        validateEmptyResponse(runner);
     }
 
     @Test(description = "Проверка свойств утки с нечетным ID и материалом rubber")
     @CitrusTest
     public void verifyOddIdWithRubber(@Optional @CitrusResource TestCaseRunner runner, @CitrusResource TestContext context) {
-        clearDuckTable(runner);
+        runner.variable("duckId","citrus:randomNumber(5,false)");
         DuckProperties duckPropertiesOdd = new DuckProperties()
                 .color("Blue")
                 .height(12.12)
@@ -51,6 +51,6 @@ public class DuckActionProperties extends DuckActionsClient {
         createDuckEnsuringIdParity(runner, context, duckPropertiesOdd, false);
         duckProperties(runner, "${duckId}");
 
-        validateFullResponse(runner, "Blue", 1212, "rubber", "quack", "ACTIVE");
+        validatePropertiesResponse(runner, "Blue", 1212, "rubber", "quack", "ACTIVE");
     }
 }
